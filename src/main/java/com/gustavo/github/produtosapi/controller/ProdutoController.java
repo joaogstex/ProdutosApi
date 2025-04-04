@@ -1,7 +1,6 @@
 package com.gustavo.github.produtosapi.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gustavo.github.produtosapi.model.Produto;
 import com.gustavo.github.produtosapi.repository.ProdutoRepository;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/produtos")
@@ -35,6 +32,25 @@ public class ProdutoController {
         String id = UUID.randomUUID().toString();
         produto.setId(id);
         return produtoRepository.save(produto);
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Produto> lerProdutoPorId(@PathVariable String id) {
+        return produtoRepository.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Produto> atualizarProduto(@PathVariable String id, 
+    @RequestBody Produto produtoAtualizado) {
+        produtoAtualizado.setId(id);
+        produtoRepository.save(produtoAtualizado);
+        return ResponseEntity.ok().body(produtoAtualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarProduto(@PathVariable String id) {
+        produtoRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 
     /*
