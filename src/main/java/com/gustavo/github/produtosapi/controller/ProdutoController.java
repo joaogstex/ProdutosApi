@@ -1,5 +1,6 @@
 package com.gustavo.github.produtosapi.controller;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gustavo.github.produtosapi.model.Produto;
@@ -20,7 +22,6 @@ import com.gustavo.github.produtosapi.repository.ProdutoRepository;
 @RequestMapping("/produtos")
 public class ProdutoController {
 
-    //private List<Produto> produtos = new ArrayList<>();
     private ProdutoRepository produtoRepository;
 
     public ProdutoController(ProdutoRepository produtoRepository) {
@@ -36,7 +37,7 @@ public class ProdutoController {
 
     @GetMapping("/{id}")
     public Optional<Produto> lerProdutoPorId(@PathVariable String id) {
-        return produtoRepository.findById(id);
+        return Optional.ofNullable(produtoRepository.findById(id).orElse(null));
     }
 
     @PutMapping("/{id}")
@@ -50,7 +51,20 @@ public class ProdutoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarProduto(@PathVariable String id) {
         produtoRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public List<Produto> acharProdutoPorNome(@RequestParam("product_name") String productName) {
+        return produtoRepository.findByProductName(productName);
+    }
+
+    //Só pra teste
+    /* Fazer funcionar depois como estudo
+    @GetMapping
+    public List<Produto> acharProdutoPorLetra(@RequestParam("product_name") String productName) {
+        String letra = Character.toString(productName.charAt(0));
+        return produtoRepository.findByProductName(letra);
     }
 
     /*
