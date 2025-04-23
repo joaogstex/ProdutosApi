@@ -2,9 +2,8 @@ package com.gustavo.github.produtosapi.controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,48 +14,47 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gustavo.github.produtosapi.exception.ProdutoException;
 import com.gustavo.github.produtosapi.model.Produto;
-import com.gustavo.github.produtosapi.repository.ProdutoRepository;
+import com.gustavo.github.produtosapi.service.ProdutoService;
 
 @RestController
 @RequestMapping("/produtos")
 public class ProdutoController {
 
-    private ProdutoRepository produtoRepository;
-
-    public ProdutoController(ProdutoRepository produtoRepository) {
-        this.produtoRepository = produtoRepository;
-    }
+    @Autowired
+    private ProdutoService produtoService;
 
     @PostMapping
-    public Produto criarProduto(@RequestBody Produto produto) {
-        String id = UUID.randomUUID().toString();
-        produto.setId(id);
-        return produtoRepository.save(produto);
-    }
-
-    @GetMapping("/{id}")
-    public Optional<Produto> lerProdutoPorId(@PathVariable String id) {
-        return Optional.ofNullable(produtoRepository.findById(id).orElse(null));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizarProduto(@PathVariable String id, 
-    @RequestBody Produto produtoAtualizado) {
-        produtoAtualizado.setId(id);
-        produtoRepository.save(produtoAtualizado);
-        return ResponseEntity.ok().body(produtoAtualizado);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarProduto(@PathVariable String id) {
-        produtoRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    public Produto criarProd(@RequestBody Produto produto) throws ProdutoException {
+        return produtoService.criarProduto(produto);
     }
 
     @GetMapping
-    public List<Produto> acharProdutoPorNome(@RequestParam("product_name") String productName) {
-        return produtoRepository.findByProductName(productName);
+    public List<Produto> listarProd() throws ProdutoException {
+        return produtoService.listarProdutos();
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Produto> lerProdPorId(String id) throws ProdutoException {
+        return Optional.of(produtoService.lerProdutoPorId(id));
+    }
+
+    @PutMapping("/{id}")
+    public Produto atualizarProd(@PathVariable String id, 
+    @RequestBody Produto produtoAtualizado) throws ProdutoException {
+        //produtoAtualizado.setId(id);
+        return produtoService.atualizarProduto(produtoAtualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletarProd(@PathVariable String id) throws ProdutoException {
+        produtoService.deletarProduto(id);
+    }
+
+    @GetMapping
+    public List<Produto> acharProdPorNome(@RequestParam("product_name") String productName) throws ProdutoException {
+        return produtoService.acharProdutoPorNome(productName);
     }
 
     //Só pra teste
