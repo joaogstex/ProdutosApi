@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gustavo.github.produtosapi.exception.ProdutoException;
 import com.gustavo.github.produtosapi.model.Produto;
@@ -23,61 +22,37 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public Produto criarProduto(Produto produto) throws ProdutoException {
-        try {
-            String id = UUID.randomUUID().toString();
-            produto.setId(id);
-            produto = produtoRepository.save(produto);
-        } catch (Exception e) {
-            throw new ProdutoException(e.getMessage());
-        }
+        String id = UUID.randomUUID().toString();
+        produto.setId(id);
+        produto = produtoRepository.save(produto);
         return produto;
     }
 
     @Override
     public List<Produto> listarProdutos() throws ProdutoException{
-        try {
-            return produtoRepository.findAll();
-        } catch (Exception e) {
-            throw new ProdutoException(e.getMessage());
-        }
+        return produtoRepository.findAll();
     }
 
     @Override
     public Produto lerProdutoPorId(String id) throws ProdutoException {
-        try {
-            return produtoRepository.findById(id).orElse(null);
-        } catch (Exception e) {
-            throw new ProdutoException(e.getMessage());
-        }
+       return produtoRepository.findById(id).orElse(null);
     }
 
     @Override
-    public Produto atualizarProduto(Produto produtoAtualizado) throws ProdutoException {
-        try {
-            produtoAtualizado.getId();
-            produtoAtualizado = produtoRepository.save(produtoAtualizado);    
-        } catch (Exception e) {
-            throw new ProdutoException(e.getMessage());
-        }
+    public Produto atualizarProduto(String id, Produto produtoAtualizado) throws ProdutoException {
+        produtoAtualizado.setId(id);
+        produtoAtualizado = produtoRepository.save(produtoAtualizado);    
         return produtoAtualizado;
     }
 
     @Override
     public void deletarProduto(String id) throws ProdutoException {
-        try {
-            produtoRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new ProdutoException(e.getMessage());
-        }
+        produtoRepository.deleteById(id);
     }
 
     @Override
-    public List<Produto> acharProdutoPorNome(@RequestParam("product_name") String productName) throws ProdutoException {
-        try {
-            return produtoRepository.findByProductName(productName);
-        } catch (Exception e) {
-            throw new ProdutoException(e.getMessage());
-        }
+    public List<Produto> acharProdutoPorNome(String productName) throws ProdutoException {
+        return produtoRepository.findByProductName(productName);
     }
 
 }

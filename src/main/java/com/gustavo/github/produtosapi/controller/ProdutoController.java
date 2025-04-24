@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gustavo.github.produtosapi.exception.ProdutoException;
@@ -36,7 +35,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Produto> lerProdPorId(String id) throws ProdutoException {
+    public Optional<Produto> lerProdPorId(@PathVariable String id) throws ProdutoException {
         return Optional.of(produtoService.lerProdutoPorId(id));
     }
 
@@ -44,7 +43,7 @@ public class ProdutoController {
     public Produto atualizarProd(@PathVariable String id, 
     @RequestBody Produto produtoAtualizado) throws ProdutoException {
         //produtoAtualizado.setId(id);
-        return produtoService.atualizarProduto(produtoAtualizado);
+        return produtoService.atualizarProduto(id, produtoAtualizado);
     }
 
     @DeleteMapping("/{id}")
@@ -52,8 +51,8 @@ public class ProdutoController {
         produtoService.deletarProduto(id);
     }
 
-    @GetMapping
-    public List<Produto> acharProdPorNome(@RequestParam("product_name") String productName) throws ProdutoException {
+    @GetMapping("/pegar/{productName}")
+    public List<Produto> acharProdPorNome(@PathVariable String productName) throws ProdutoException {
         return produtoService.acharProdutoPorNome(productName);
     }
 

@@ -13,7 +13,7 @@ public interface ProdutoService {
 
     Produto lerProdutoPorId(String id) throws ProdutoException;
 
-    Produto atualizarProduto(Produto produtoAtualizado) throws ProdutoException;
+    Produto atualizarProduto(String id, Produto produtoAtualizado) throws ProdutoException;
 
     void deletarProduto(String id) throws ProdutoException;
 
